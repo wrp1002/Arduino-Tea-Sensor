@@ -8,6 +8,7 @@
 
 #define BUZZER_PIN D5
 #define WIFI_MODE_PIN D6
+#define BATTERY_PIN A0
 
 const char *ssid = "ssid";
 const char *pass = "pass";
@@ -29,7 +30,7 @@ struct SavedDataStruct {
 
 // ======================= Misc Functions =======================
 String GetStatus() {
-	StaticJsonDocument<50> doc;
+	StaticJsonDocument<100> doc;
 	String responseHTML;
 
 	float ambientTemp = mlx.readAmbientTempF();
@@ -38,6 +39,7 @@ String GetStatus() {
 	doc["ambientTemp"] = ambientTemp;
 	doc["objectTemp"] = objectTemp;
 	doc["targetTemp"] = saveData.targetTemp;
+	doc["battery"] = analogRead(BATTERY_PIN);
 	
 	serializeJson(doc, responseHTML);
 	return responseHTML;
@@ -63,7 +65,7 @@ void setup() {
 	pinMode(BUZZER_PIN, OUTPUT);
 	pinMode(LED_BUILTIN, OUTPUT);
 	pinMode(WIFI_MODE_PIN, INPUT);
-	wifiMode = digitalRead(WIFI_MODE_PIN);
+	//wifiMode = digitalRead(WIFI_MODE_PIN);
 
 	LoadSavedData();
 	
@@ -133,6 +135,6 @@ void loop() {
 	if (!wifiMode)
 		dnsServer.processNextRequest();
 	server.handleClient();
-	
+
 	delay(1);
 }

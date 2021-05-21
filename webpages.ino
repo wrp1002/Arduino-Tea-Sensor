@@ -82,10 +82,12 @@ void HandleRoot() {
 							let ambientTemp = data["ambientTemp"];
 							let objectTemp = data["objectTemp"];
 							targetTemp = data["targetTemp"];
+							let batteryLevel = data["battery"];
 
 							document.getElementById("ambientTemp").innerHTML = ambientTemp.toFixed(2).toString() + "&deg;F";
 							document.getElementById("objectTemp").innerHTML = objectTemp.toFixed(2).toString() + "&deg;F";
 							document.getElementById("targetTemp").innerHTML = targetTemp.toFixed(2).toString() + "&deg;F";
+							document.getElementById("battery").innerHTML = Math.floor(batteryLevel / 1024.0 * 100).toString() + "%";
 						}
 					};
 					xhttp.open("GET", "temperature", true);
@@ -127,6 +129,7 @@ void HandleRoot() {
                 <h3>Ambient Temperature: <span id="ambientTemp">?</span></h3>
                 <h3>Object Temperature: <span id="objectTemp">?</span></h3>
                 <h3>Target Tea Temperature: <span id="targetTemp">?</span></h3>
+                <h3>Battery: <span id="battery">?</span></h3>
 
                 <hr>
                 <ul class="options">
@@ -199,6 +202,17 @@ void HandleTestBuzzer() {
   for(int i = 1500; i >= 31; i -= 5) {
   	tone(BUZZER_PIN, i, noteLength);
   	delay(noteLength);
+  }
+  delay(500);
+  for(int i = 31; i < 2000; i += 100) {
+  	tone(BUZZER_PIN, i, 200);
+  	delay(300);
+  }
+
+  delay(500);
+  for(int i = 31; i < 2000; i += 100) {
+  	tone(BUZZER_PIN, sin(i * 0.025) * 500 + 500, 100);
+  	delay(100);
   }
 
   server.send(200);
